@@ -29,6 +29,7 @@ void main() {
     required Beautishop shop,
     VoidCallback? onEdit,
     VoidCallback? onDelete,
+    Future<void> Function()? onCategorySettings,
     Future<void> Function()? onRefresh,
     bool isDeleting = false,
   }) {
@@ -37,6 +38,7 @@ void main() {
         shop: shop,
         onEdit: onEdit ?? () {},
         onDelete: onDelete ?? () {},
+        onCategorySettings: onCategorySettings ?? () async {},
         onRefresh: onRefresh ?? () async {},
         isDeleting: isDeleting,
       ),
@@ -75,6 +77,29 @@ void main() {
       expect(find.text('삭제'), findsOneWidget);
     });
 
+    testWidgets('should display category settings button', (tester) async {
+      await tester.pumpWidget(createTestWidget(shop: tBeautishop));
+
+      expect(find.text('카테고리 설정'), findsOneWidget);
+    });
+
+    testWidgets('should call onCategorySettings when category button is pressed',
+        (tester) async {
+      var categorySettingsCalled = false;
+
+      await tester.pumpWidget(createTestWidget(
+        shop: tBeautishop,
+        onCategorySettings: () async {
+          categorySettingsCalled = true;
+        },
+      ));
+
+      await tester.tap(find.text('카테고리 설정'));
+      await tester.pumpAndSettle();
+
+      expect(categorySettingsCalled, isTrue);
+    });
+
     testWidgets('should call onEdit when edit button is pressed',
         (tester) async {
       var editCalled = false;
@@ -84,6 +109,8 @@ void main() {
         onEdit: () => editCalled = true,
       ));
 
+      await tester.ensureVisible(find.text('수정'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('수정'));
       await tester.pumpAndSettle();
 

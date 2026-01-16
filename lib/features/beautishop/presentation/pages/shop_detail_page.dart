@@ -9,6 +9,7 @@ class ShopDetailPage extends StatelessWidget {
   final Beautishop shop;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final Future<void> Function() onCategorySettings;
   final Future<void> Function() onRefresh;
   final bool isDeleting;
 
@@ -17,6 +18,7 @@ class ShopDetailPage extends StatelessWidget {
     required this.shop,
     required this.onEdit,
     required this.onDelete,
+    required this.onCategorySettings,
     required this.onRefresh,
     this.isDeleting = false,
   });
@@ -47,6 +49,7 @@ class ShopDetailPage extends StatelessWidget {
                     ShopActionButtons(
                       onEdit: onEdit,
                       onDelete: onDelete,
+                      onCategorySettings: onCategorySettings,
                       isDeleting: isDeleting,
                     ),
                     const SizedBox(height: 24),

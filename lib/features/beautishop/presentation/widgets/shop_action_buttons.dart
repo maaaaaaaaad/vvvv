@@ -4,12 +4,14 @@ import 'package:jellomark_mobile_owner/shared/theme/app_colors.dart';
 class ShopActionButtons extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final Future<void> Function() onCategorySettings;
   final bool isDeleting;
 
   const ShopActionButtons({
     super.key,
     required this.onEdit,
     required this.onDelete,
+    required this.onCategorySettings,
     this.isDeleting = false,
   });
 
@@ -17,16 +19,42 @@ class ShopActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: _buildEditButton(),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildDeleteButton(context),
+          _buildCategorySettingsButton(),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildEditButton(),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildDeleteButton(context),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCategorySettingsButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: isDeleting ? null : onCategorySettings,
+        icon: const Icon(Icons.category, size: 18),
+        label: const Text('카테고리 설정'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.lavenderDark,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          disabledBackgroundColor: AppColors.lavenderDark.withValues(alpha: 0.5),
+        ),
       ),
     );
   }

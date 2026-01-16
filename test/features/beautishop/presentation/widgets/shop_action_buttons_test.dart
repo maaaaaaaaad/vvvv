@@ -6,6 +6,7 @@ void main() {
   Widget createTestWidget({
     required VoidCallback onEdit,
     required VoidCallback onDelete,
+    required Future<void> Function() onCategorySettings,
     bool isDeleting = false,
   }) {
     return MaterialApp(
@@ -13,6 +14,7 @@ void main() {
         body: ShopActionButtons(
           onEdit: onEdit,
           onDelete: onDelete,
+          onCategorySettings: onCategorySettings,
           isDeleting: isDeleting,
         ),
       ),
@@ -24,6 +26,7 @@ void main() {
       await tester.pumpWidget(createTestWidget(
         onEdit: () {},
         onDelete: () {},
+        onCategorySettings: () async {},
       ));
 
       expect(find.text('수정'), findsOneWidget);
@@ -33,15 +36,27 @@ void main() {
       await tester.pumpWidget(createTestWidget(
         onEdit: () {},
         onDelete: () {},
+        onCategorySettings: () async {},
       ));
 
       expect(find.text('삭제'), findsOneWidget);
+    });
+
+    testWidgets('should display category settings button', (tester) async {
+      await tester.pumpWidget(createTestWidget(
+        onEdit: () {},
+        onDelete: () {},
+        onCategorySettings: () async {},
+      ));
+
+      expect(find.text('카테고리 설정'), findsOneWidget);
     });
 
     testWidgets('should display edit icon', (tester) async {
       await tester.pumpWidget(createTestWidget(
         onEdit: () {},
         onDelete: () {},
+        onCategorySettings: () async {},
       ));
 
       expect(find.byIcon(Icons.edit), findsOneWidget);
@@ -51,9 +66,20 @@ void main() {
       await tester.pumpWidget(createTestWidget(
         onEdit: () {},
         onDelete: () {},
+        onCategorySettings: () async {},
       ));
 
       expect(find.byIcon(Icons.delete), findsOneWidget);
+    });
+
+    testWidgets('should display category icon', (tester) async {
+      await tester.pumpWidget(createTestWidget(
+        onEdit: () {},
+        onDelete: () {},
+        onCategorySettings: () async {},
+      ));
+
+      expect(find.byIcon(Icons.category), findsOneWidget);
     });
 
     testWidgets('should call onEdit when edit button is pressed',
@@ -63,6 +89,7 @@ void main() {
       await tester.pumpWidget(createTestWidget(
         onEdit: () => editCalled = true,
         onDelete: () {},
+        onCategorySettings: () async {},
       ));
 
       await tester.tap(find.text('수정'));
@@ -71,11 +98,30 @@ void main() {
       expect(editCalled, isTrue);
     });
 
+    testWidgets('should call onCategorySettings when category button is pressed',
+        (tester) async {
+      var categorySettingsCalled = false;
+
+      await tester.pumpWidget(createTestWidget(
+        onEdit: () {},
+        onDelete: () {},
+        onCategorySettings: () async {
+          categorySettingsCalled = true;
+        },
+      ));
+
+      await tester.tap(find.text('카테고리 설정'));
+      await tester.pumpAndSettle();
+
+      expect(categorySettingsCalled, isTrue);
+    });
+
     testWidgets('should show confirmation dialog when delete button is pressed',
         (tester) async {
       await tester.pumpWidget(createTestWidget(
         onEdit: () {},
         onDelete: () {},
+        onCategorySettings: () async {},
       ));
 
       await tester.tap(find.text('삭제'));
@@ -92,6 +138,7 @@ void main() {
       await tester.pumpWidget(createTestWidget(
         onEdit: () {},
         onDelete: () => deleteCalled = true,
+        onCategorySettings: () async {},
       ));
 
       await tester.tap(find.text('삭제'));
@@ -110,6 +157,7 @@ void main() {
       await tester.pumpWidget(createTestWidget(
         onEdit: () {},
         onDelete: () => deleteCalled = true,
+        onCategorySettings: () async {},
       ));
 
       await tester.tap(find.text('삭제'));
@@ -125,6 +173,7 @@ void main() {
       await tester.pumpWidget(createTestWidget(
         onEdit: () {},
         onDelete: () {},
+        onCategorySettings: () async {},
         isDeleting: true,
       ));
 
@@ -137,6 +186,7 @@ void main() {
       await tester.pumpWidget(createTestWidget(
         onEdit: () => editCalled = true,
         onDelete: () {},
+        onCategorySettings: () async {},
         isDeleting: true,
       ));
 
@@ -144,6 +194,25 @@ void main() {
       await tester.pump();
 
       expect(editCalled, isFalse);
+    });
+
+    testWidgets('should disable category settings button when deleting',
+        (tester) async {
+      var categorySettingsCalled = false;
+
+      await tester.pumpWidget(createTestWidget(
+        onEdit: () {},
+        onDelete: () {},
+        onCategorySettings: () async {
+          categorySettingsCalled = true;
+        },
+        isDeleting: true,
+      ));
+
+      await tester.tap(find.text('카테고리 설정'));
+      await tester.pump();
+
+      expect(categorySettingsCalled, isFalse);
     });
   });
 }
