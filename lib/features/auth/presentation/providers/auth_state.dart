@@ -31,6 +31,10 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [owner, accessToken, refreshToken];
 }
 
+class AuthUnauthenticated extends AuthState {
+  const AuthUnauthenticated();
+}
+
 class AuthError extends AuthState {
   final String message;
 
