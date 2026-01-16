@@ -1,0 +1,61 @@
+name: jellomark_mobile_owner
+description: "JelloMark Owner - Beauty Shop Management App for Owners"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_native_splash: ^2.4.0
+  get_it: ^9.2.0
+  dio: ^5.9.0
+  flutter_secure_storage: ^10.0.0
+  equatable: ^2.0.8
+  dartz: ^0.10.1
+  flutter_riverpod: ^2.6.1
+  shared_preferences: ^2.3.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  mockito: ^5.6.1
+  build_runner: ^2.10.4
+  http_mock_adapter: ^0.6.1
+  mocktail: ^1.0.4
+  flutter_launcher_icons: ^0.14.4
+
+flutter_native_splash:
+  color: "#FFB5BA"
+  android_12:
+    color: "#FFB5BA"
+  ios: true
+  android: true
+  fullscreen: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app-icon-owner.png"
+  remove_alpha_ios: true
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: Esamanru
+      fonts:
+        - asset: assets/fonts/esamanru-Light.ttf
+          weight: 300
+        - asset: assets/fonts/esamanru-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/esamanru-Bold.ttf
+          weight: 700
+
+  assets:
+    - assets/splash/
+    - assets/icons/
