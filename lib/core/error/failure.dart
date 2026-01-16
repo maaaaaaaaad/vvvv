@@ -27,3 +27,11 @@ class NoTokenFailure extends Failure {
 class ValidationFailure extends Failure {
   const ValidationFailure(super.message);
 }
+
+class NotFoundFailure extends Failure {
+  const NotFoundFailure(super.message);
+}
+
+class ForbiddenFailure extends Failure {
+  const ForbiddenFailure(super.message);
+}
