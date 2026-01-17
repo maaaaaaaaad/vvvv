@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final domains = ['auth', 'owner', 'beautishop', 'category', 'treatment', 'review'];
+  final domains = ['auth', 'owner', 'beautishop', 'category', 'treatment', 'review', 'home'];
   final projectRoot = _findProjectRoot();
   final libPath = '$projectRoot/lib';
   final testPath = '$projectRoot/test';

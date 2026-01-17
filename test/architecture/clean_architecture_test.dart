@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final domains = ['auth', 'owner', 'beautishop', 'category', 'treatment', 'review'];
+  final domains = ['auth', 'owner', 'beautishop', 'category', 'treatment', 'review', 'home'];
   final projectRoot = _findProjectRoot();
   final libPath = '$projectRoot/lib';
 
@@ -156,7 +156,8 @@ void main() {
     });
 
     group('Data Layer Structure', () {
-      for (final domain in domains) {
+      final domainsWithDatasources = domains.where((d) => d != 'home').toList();
+      for (final domain in domainsWithDatasources) {
         test('$domain data should have datasources folder', () {
           final datasourcesPath = Directory(
             '$libPath/features/$domain/data/datasources',

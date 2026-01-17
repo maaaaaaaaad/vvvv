@@ -17,9 +17,14 @@ void main() {
 
   Widget createTestWidget({
     Treatment? initialTreatment,
-    void Function(String name, String? description, int price, int duration,
-            String? imageUrl)?
-        onSubmit,
+    void Function(
+      String name,
+      String? description,
+      int price,
+      int duration,
+      String? imageUrl,
+    )?
+    onSubmit,
     bool isSubmitting = false,
   }) {
     return MaterialApp(
@@ -64,8 +69,9 @@ void main() {
       expect(find.widgetWithText(TextFormField, '이미지 URL'), findsOneWidget);
     });
 
-    testWidgets('should prefill fields when initialTreatment is provided',
-        (tester) async {
+    testWidgets('should prefill fields when initialTreatment is provided', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget(initialTreatment: tTreatment));
 
       expect(find.text('Test Treatment'), findsOneWidget);
@@ -86,10 +92,11 @@ void main() {
     testWidgets('should show error when price is empty', (tester) async {
       await tester.pumpWidget(createTestWidget());
 
+      await tester.enterText(find.widgetWithText(TextFormField, '시술명'), 'Test');
       await tester.enterText(
-          find.widgetWithText(TextFormField, '시술명'), 'Test');
-      await tester.enterText(
-          find.widgetWithText(TextFormField, '소요시간 (분)'), '30');
+        find.widgetWithText(TextFormField, '소요시간 (분)'),
+        '30',
+      );
 
       await tester.tap(find.text('저장'));
       await tester.pumpAndSettle();
@@ -100,12 +107,12 @@ void main() {
     testWidgets('should show error when duration is zero', (tester) async {
       await tester.pumpWidget(createTestWidget());
 
+      await tester.enterText(find.widgetWithText(TextFormField, '시술명'), 'Test');
+      await tester.enterText(find.widgetWithText(TextFormField, '가격'), '10000');
       await tester.enterText(
-          find.widgetWithText(TextFormField, '시술명'), 'Test');
-      await tester.enterText(
-          find.widgetWithText(TextFormField, '가격'), '10000');
-      await tester.enterText(
-          find.widgetWithText(TextFormField, '소요시간 (분)'), '0');
+        find.widgetWithText(TextFormField, '소요시간 (분)'),
+        '0',
+      );
 
       await tester.tap(find.text('저장'));
       await tester.pumpAndSettle();
@@ -113,30 +120,38 @@ void main() {
       expect(find.text('0보다 큰 값을 입력해주세요'), findsOneWidget);
     });
 
-    testWidgets('should call onSubmit with correct values when form is valid',
-        (tester) async {
+    testWidgets('should call onSubmit with correct values when form is valid', (
+      tester,
+    ) async {
       String? submittedName;
       String? submittedDescription;
       int? submittedPrice;
       int? submittedDuration;
 
-      await tester.pumpWidget(createTestWidget(
-        onSubmit: (name, description, price, duration, imageUrl) {
-          submittedName = name;
-          submittedDescription = description;
-          submittedPrice = price;
-          submittedDuration = duration;
-        },
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          onSubmit: (name, description, price, duration, imageUrl) {
+            submittedName = name;
+            submittedDescription = description;
+            submittedPrice = price;
+            submittedDuration = duration;
+          },
+        ),
+      );
 
       await tester.enterText(
-          find.widgetWithText(TextFormField, '시술명'), 'New Treatment');
+        find.widgetWithText(TextFormField, '시술명'),
+        'New Treatment',
+      );
       await tester.enterText(
-          find.widgetWithText(TextFormField, '설명'), 'Description');
+        find.widgetWithText(TextFormField, '설명'),
+        'Description',
+      );
+      await tester.enterText(find.widgetWithText(TextFormField, '가격'), '25000');
       await tester.enterText(
-          find.widgetWithText(TextFormField, '가격'), '25000');
-      await tester.enterText(
-          find.widgetWithText(TextFormField, '소요시간 (분)'), '45');
+        find.widgetWithText(TextFormField, '소요시간 (분)'),
+        '45',
+      );
 
       await tester.tap(find.text('저장'));
       await tester.pumpAndSettle();
@@ -147,16 +162,18 @@ void main() {
       expect(submittedDuration, 45);
     });
 
-    testWidgets('should disable submit button when isSubmitting is true',
-        (tester) async {
+    testWidgets('should disable submit button when isSubmitting is true', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget(isSubmitting: true));
 
       final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
       expect(button.onPressed, isNull);
     });
 
-    testWidgets('should show loading indicator when isSubmitting is true',
-        (tester) async {
+    testWidgets('should show loading indicator when isSubmitting is true', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget(isSubmitting: true));
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
