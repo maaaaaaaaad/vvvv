@@ -1,8 +1,9 @@
 import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final domains = ['auth', 'owner', 'beautishop', 'category'];
+  final domains = ['auth', 'owner', 'beautishop', 'category', 'treatment', 'review'];
   final projectRoot = _findProjectRoot();
   final libPath = '$projectRoot/lib';
   final testPath = '$projectRoot/test';
@@ -19,7 +20,8 @@ void main() {
 
           for (final usecaseFile in usecaseFiles) {
             final fileName = _getFileName(usecaseFile);
-            final testFileName = '${fileName.replaceAll('.dart', '')}_test.dart';
+            final testFileName =
+                '${fileName.replaceAll('.dart', '')}_test.dart';
             final testFilePath = '$testUsecasesPath/$testFileName';
 
             if (!File(testFilePath).existsSync()) {
@@ -30,7 +32,8 @@ void main() {
           expect(
             missingTests,
             isEmpty,
-            reason: 'Missing test files for $domain usecases:\n'
+            reason:
+                'Missing test files for $domain usecases:\n'
                 '${missingTests.map((f) => '  - $f').join('\n')}\n'
                 'Expected test files at: $testUsecasesPath/',
           );
@@ -40,34 +43,38 @@ void main() {
 
     group('Repository Test Coverage', () {
       for (final domain in domains) {
-        test('All $domain repository implementations should have test files',
-            () {
-          final repositoriesPath = '$libPath/features/$domain/data/repositories';
-          final testRepositoriesPath =
-              '$testPath/features/$domain/data/repositories';
+        test(
+          'All $domain repository implementations should have test files',
+          () {
+            final repositoriesPath =
+                '$libPath/features/$domain/data/repositories';
+            final testRepositoriesPath =
+                '$testPath/features/$domain/data/repositories';
 
-          final repositoryFiles = _getDartFiles(repositoriesPath);
-          final missingTests = <String>[];
+            final repositoryFiles = _getDartFiles(repositoriesPath);
+            final missingTests = <String>[];
 
-          for (final repositoryFile in repositoryFiles) {
-            final fileName = _getFileName(repositoryFile);
-            final testFileName =
-                '${fileName.replaceAll('.dart', '')}_test.dart';
-            final testFilePath = '$testRepositoriesPath/$testFileName';
+            for (final repositoryFile in repositoryFiles) {
+              final fileName = _getFileName(repositoryFile);
+              final testFileName =
+                  '${fileName.replaceAll('.dart', '')}_test.dart';
+              final testFilePath = '$testRepositoriesPath/$testFileName';
 
-            if (!File(testFilePath).existsSync()) {
-              missingTests.add(fileName);
+              if (!File(testFilePath).existsSync()) {
+                missingTests.add(fileName);
+              }
             }
-          }
 
-          expect(
-            missingTests,
-            isEmpty,
-            reason: 'Missing test files for $domain repositories:\n'
-                '${missingTests.map((f) => '  - $f').join('\n')}\n'
-                'Expected test files at: $testRepositoriesPath/',
-          );
-        });
+            expect(
+              missingTests,
+              isEmpty,
+              reason:
+                  'Missing test files for $domain repositories:\n'
+                  '${missingTests.map((f) => '  - $f').join('\n')}\n'
+                  'Expected test files at: $testRepositoriesPath/',
+            );
+          },
+        );
       }
     });
 
@@ -82,7 +89,8 @@ void main() {
 
           for (final entityFile in entityFiles) {
             final fileName = _getFileName(entityFile);
-            final testFileName = '${fileName.replaceAll('.dart', '')}_test.dart';
+            final testFileName =
+                '${fileName.replaceAll('.dart', '')}_test.dart';
             final testFilePath = '$testEntitiesPath/$testFileName';
 
             if (!File(testFilePath).existsSync()) {
@@ -93,7 +101,8 @@ void main() {
           expect(
             missingTests,
             isEmpty,
-            reason: 'Missing test files for $domain entities:\n'
+            reason:
+                'Missing test files for $domain entities:\n'
                 '${missingTests.map((f) => '  - $f').join('\n')}\n'
                 'Expected test files at: $testEntitiesPath/',
           );
@@ -125,7 +134,8 @@ void main() {
           expect(
             missingTests,
             isEmpty,
-            reason: 'Missing test files for $domain datasources:\n'
+            reason:
+                'Missing test files for $domain datasources:\n'
                 '${missingTests.map((f) => '  - $f').join('\n')}\n'
                 'Expected test files at: $testDatasourcesPath/',
           );
@@ -187,21 +197,29 @@ void main() {
           );
 
           final domainSource =
-              usecases.length + repositories.length + entities.length + datasources.length;
+              usecases.length +
+              repositories.length +
+              entities.length +
+              datasources.length;
           final domainTests =
-              usecaseTests.length + repositoryTests.length + entityTests.length + datasourceTests.length;
+              usecaseTests.length +
+              repositoryTests.length +
+              entityTests.length +
+              datasourceTests.length;
 
           totalSource += domainSource;
           totalTests += domainTests;
 
-          final coverage =
-              domainSource > 0 ? (domainTests / domainSource * 100).toStringAsFixed(1) : '0.0';
+          final coverage = domainSource > 0
+              ? (domainTests / domainSource * 100).toStringAsFixed(1)
+              : '0.0';
           report.writeln('  Coverage: $coverage%');
           report.writeln('');
         }
 
-        final totalCoverage =
-            totalSource > 0 ? (totalTests / totalSource * 100).toStringAsFixed(1) : '0.0';
+        final totalCoverage = totalSource > 0
+            ? (totalTests / totalSource * 100).toStringAsFixed(1)
+            : '0.0';
         report.writeln('=== Total Coverage: $totalCoverage% ===');
         report.writeln('Source files: $totalSource, Test files: $totalTests');
 
@@ -223,7 +241,8 @@ void main() {
 
           for (final modelFile in modelFiles) {
             final fileName = _getFileName(modelFile);
-            final testFileName = '${fileName.replaceAll('.dart', '')}_test.dart';
+            final testFileName =
+                '${fileName.replaceAll('.dart', '')}_test.dart';
             final testFilePath = '$testModelsPath/$testFileName';
 
             if (!File(testFilePath).existsSync()) {
@@ -234,7 +253,8 @@ void main() {
           expect(
             missingTests,
             isEmpty,
-            reason: 'Missing test files for $domain models:\n'
+            reason:
+                'Missing test files for $domain models:\n'
                 '${missingTests.map((f) => '  - $f').join('\n')}\n'
                 'Expected test files at: $testModelsPath/',
           );

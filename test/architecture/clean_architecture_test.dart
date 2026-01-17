@@ -1,8 +1,9 @@
 import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final domains = ['auth', 'owner', 'beautishop', 'category'];
+  final domains = ['auth', 'owner', 'beautishop', 'category', 'treatment', 'review'];
   final projectRoot = _findProjectRoot();
   final libPath = '$projectRoot/lib';
 
@@ -28,32 +29,33 @@ void main() {
           );
         });
 
-        test('$domain domain layer should not import presentation layer',
-            () async {
-          final domainPath = '$libPath/features/$domain/domain';
-          final violations = await _findImportViolations(
-            directoryPath: domainPath,
-            forbiddenPatterns: [
-              'features/$domain/presentation/',
-              "features/$domain/presentation'",
-            ],
-          );
+        test(
+          '$domain domain layer should not import presentation layer',
+          () async {
+            final domainPath = '$libPath/features/$domain/domain';
+            final violations = await _findImportViolations(
+              directoryPath: domainPath,
+              forbiddenPatterns: [
+                'features/$domain/presentation/',
+                "features/$domain/presentation'",
+              ],
+            );
 
-          expect(
-            violations,
-            isEmpty,
-            reason:
-                'Domain layer in $domain should not import from presentation layer.\n'
-                'Violations found:\n${violations.join('\n')}',
-          );
-        });
+            expect(
+              violations,
+              isEmpty,
+              reason:
+                  'Domain layer in $domain should not import from presentation layer.\n'
+                  'Violations found:\n${violations.join('\n')}',
+            );
+          },
+        );
       }
     });
 
     group('Data Layer Independence', () {
       for (final domain in domains) {
-        test('$domain data layer should not import presentation layer',
-            () async {
+        test('$domain data layer should not import presentation layer', () async {
           final dataPath = '$libPath/features/$domain/data';
           final violations = await _findImportViolations(
             directoryPath: dataPath,
@@ -95,8 +97,9 @@ void main() {
         });
 
         test('$domain should have presentation layer', () {
-          final presentationPath =
-              Directory('$libPath/features/$domain/presentation');
+          final presentationPath = Directory(
+            '$libPath/features/$domain/presentation',
+          );
           expect(
             presentationPath.existsSync(),
             isTrue,
@@ -109,9 +112,11 @@ void main() {
     group('Domain Layer Structure', () {
       for (final domain in domains) {
         test('$domain domain should have entities folder', () {
-          final entitiesPath =
-              Directory('$libPath/features/$domain/domain/entities');
-          final hasEntities = entitiesPath.existsSync() &&
+          final entitiesPath = Directory(
+            '$libPath/features/$domain/domain/entities',
+          );
+          final hasEntities =
+              entitiesPath.existsSync() &&
               entitiesPath
                   .listSync()
                   .where((f) => f.path.endsWith('.dart'))
@@ -127,8 +132,9 @@ void main() {
         });
 
         test('$domain domain should have repositories folder', () {
-          final repositoriesPath =
-              Directory('$libPath/features/$domain/domain/repositories');
+          final repositoriesPath = Directory(
+            '$libPath/features/$domain/domain/repositories',
+          );
           expect(
             repositoriesPath.existsSync(),
             isTrue,
@@ -137,8 +143,9 @@ void main() {
         });
 
         test('$domain domain should have usecases folder', () {
-          final usecasesPath =
-              Directory('$libPath/features/$domain/domain/usecases');
+          final usecasesPath = Directory(
+            '$libPath/features/$domain/domain/usecases',
+          );
           expect(
             usecasesPath.existsSync(),
             isTrue,
@@ -151,8 +158,9 @@ void main() {
     group('Data Layer Structure', () {
       for (final domain in domains) {
         test('$domain data should have datasources folder', () {
-          final datasourcesPath =
-              Directory('$libPath/features/$domain/data/datasources');
+          final datasourcesPath = Directory(
+            '$libPath/features/$domain/data/datasources',
+          );
           expect(
             datasourcesPath.existsSync(),
             isTrue,
@@ -161,8 +169,9 @@ void main() {
         });
 
         test('$domain data should have repositories folder', () {
-          final repositoriesPath =
-              Directory('$libPath/features/$domain/data/repositories');
+          final repositoriesPath = Directory(
+            '$libPath/features/$domain/data/repositories',
+          );
           expect(
             repositoriesPath.existsSync(),
             isTrue,
@@ -174,56 +183,59 @@ void main() {
 
     group('Cross-Domain Import Rules', () {
       for (final domain in domains) {
-        test('$domain domain should not import other domain data layers',
-            () async {
-          final domainPath = '$libPath/features/$domain/domain';
-          final otherDomains = domains.where((d) => d != domain).toList();
+        test(
+          '$domain domain should not import other domain data layers',
+          () async {
+            final domainPath = '$libPath/features/$domain/domain';
+            final otherDomains = domains.where((d) => d != domain).toList();
 
-          final forbiddenPatterns = <String>[];
-          for (final otherDomain in otherDomains) {
-            forbiddenPatterns.add('features/$otherDomain/data/');
-            forbiddenPatterns.add("features/$otherDomain/data'");
-          }
+            final forbiddenPatterns = <String>[];
+            for (final otherDomain in otherDomains) {
+              forbiddenPatterns.add('features/$otherDomain/data/');
+              forbiddenPatterns.add("features/$otherDomain/data'");
+            }
 
-          final violations = await _findImportViolations(
-            directoryPath: domainPath,
-            forbiddenPatterns: forbiddenPatterns,
-          );
+            final violations = await _findImportViolations(
+              directoryPath: domainPath,
+              forbiddenPatterns: forbiddenPatterns,
+            );
 
-          expect(
-            violations,
-            isEmpty,
-            reason:
-                '$domain domain layer should not import from other domain data layers.\n'
-                'Violations found:\n${violations.join('\n')}',
-          );
-        });
+            expect(
+              violations,
+              isEmpty,
+              reason:
+                  '$domain domain layer should not import from other domain data layers.\n'
+                  'Violations found:\n${violations.join('\n')}',
+            );
+          },
+        );
 
         test(
-            '$domain domain should not import other domain presentation layers',
-            () async {
-          final domainPath = '$libPath/features/$domain/domain';
-          final otherDomains = domains.where((d) => d != domain).toList();
+          '$domain domain should not import other domain presentation layers',
+          () async {
+            final domainPath = '$libPath/features/$domain/domain';
+            final otherDomains = domains.where((d) => d != domain).toList();
 
-          final forbiddenPatterns = <String>[];
-          for (final otherDomain in otherDomains) {
-            forbiddenPatterns.add('features/$otherDomain/presentation/');
-            forbiddenPatterns.add("features/$otherDomain/presentation'");
-          }
+            final forbiddenPatterns = <String>[];
+            for (final otherDomain in otherDomains) {
+              forbiddenPatterns.add('features/$otherDomain/presentation/');
+              forbiddenPatterns.add("features/$otherDomain/presentation'");
+            }
 
-          final violations = await _findImportViolations(
-            directoryPath: domainPath,
-            forbiddenPatterns: forbiddenPatterns,
-          );
+            final violations = await _findImportViolations(
+              directoryPath: domainPath,
+              forbiddenPatterns: forbiddenPatterns,
+            );
 
-          expect(
-            violations,
-            isEmpty,
-            reason:
-                '$domain domain layer should not import from other domain presentation layers.\n'
-                'Violations found:\n${violations.join('\n')}',
-          );
-        });
+            expect(
+              violations,
+              isEmpty,
+              reason:
+                  '$domain domain layer should not import from other domain presentation layers.\n'
+                  'Violations found:\n${violations.join('\n')}',
+            );
+          },
+        );
       }
     });
   });
@@ -262,8 +274,10 @@ Future<List<String>> _findImportViolations({
         if (line.trim().startsWith('import ')) {
           for (final pattern in forbiddenPatterns) {
             if (line.contains(pattern)) {
-              final relativePath =
-                  entity.path.replaceFirst('$directoryPath/', '');
+              final relativePath = entity.path.replaceFirst(
+                '$directoryPath/',
+                '',
+              );
               violations.add('  File: $relativePath, Line ${i + 1}: $line');
             }
           }
