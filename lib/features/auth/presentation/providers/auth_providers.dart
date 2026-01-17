@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jellomark_mobile_owner/core/di/injection_container.dart';
 import 'package:jellomark_mobile_owner/core/network/api_client.dart';
@@ -39,7 +40,9 @@ final logoutUseCaseProvider = Provider<LogoutUseCase>((ref) {
   return LogoutUseCase(repository: ref.watch(authRepositoryProvider));
 });
 
-final authStateProvider = StateNotifierProvider<AuthStateNotifier, AuthState>((ref) {
+final authStateProvider = StateNotifierProvider<AuthStateNotifier, AuthState>((
+  ref,
+) {
   return AuthStateNotifier(
     signUpOwnerUseCase: ref.watch(signUpOwnerUseCaseProvider),
     loginUseCase: ref.watch(loginUseCaseProvider),
@@ -90,28 +93,24 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     );
   }
 
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     state = const AuthLoading();
 
     final result = await loginUseCase(
       LoginParams(email: email, password: password),
     );
 
-    await result.fold(
-      (failure) async => state = AuthError(failure.message),
-      (authResult) async {
-        await tokenStorage.saveAccessToken(authResult.accessToken);
-        await tokenStorage.saveRefreshToken(authResult.refreshToken);
-        state = AuthAuthenticated(
-          owner: authResult.owner,
-          accessToken: authResult.accessToken,
-          refreshToken: authResult.refreshToken,
-        );
-      },
-    );
+    await result.fold((failure) async => state = AuthError(failure.message), (
+      authResult,
+    ) async {
+      await tokenStorage.saveAccessToken(authResult.accessToken);
+      await tokenStorage.saveRefreshToken(authResult.refreshToken);
+      state = AuthAuthenticated(
+        owner: authResult.owner,
+        accessToken: authResult.accessToken,
+        refreshToken: authResult.refreshToken,
+      );
+    });
   }
 
   Future<void> logout() async {
@@ -143,5 +142,10 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       accessToken: accessToken,
       refreshToken: refreshToken ?? '',
     );
+  }
+
+  @visibleForTesting
+  void setStateForTesting(AuthState newState) {
+    state = newState;
   }
 }

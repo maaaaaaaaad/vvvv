@@ -3,6 +3,7 @@ import 'package:jellomark_mobile_owner/config/theme.dart';
 import 'package:jellomark_mobile_owner/features/auth/presentation/pages/login_page.dart';
 import 'package:jellomark_mobile_owner/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:jellomark_mobile_owner/features/auth/presentation/pages/splash_page.dart';
+import 'package:jellomark_mobile_owner/features/shell/presentation/pages/main_shell.dart';
 
 class JelloMarkOwnerApp extends StatelessWidget {
   const JelloMarkOwnerApp({super.key});
@@ -24,21 +25,8 @@ class JelloMarkOwnerApp extends StatelessWidget {
         splashRoute: (context) => const SplashPage(),
         loginRoute: (context) => const LoginPage(),
         signUpRoute: (context) => const SignUpPage(),
-        mainRoute: (context) => const _MainPlaceholder(),
+        mainRoute: (context) => const MainShell(),
       },
-    );
-  }
-}
-
-class _MainPlaceholder extends StatelessWidget {
-  const _MainPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Main Page (Coming Soon)'),
-      ),
     );
   }
 }
